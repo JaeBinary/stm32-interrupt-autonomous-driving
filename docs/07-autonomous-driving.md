@@ -154,21 +154,25 @@ if (0x0F == IRsensor_value) {
 
 ## 전체 동작 흐름
 
-```
-[전원 투입]
-    │
-    ▼
-[STATE_BREAK]  ← 900ms 느린 LED 점멸
-    │  PC13 버튼 누름 → EXTI ISR → chPC13_Rising = 'y'
-    ▼
-[STATE_RUN]    ← 300ms 빠른 LED 점멸
-    │
-    ├─ 0x00 → Motor_Forwart_Start(100, 100, 100, 100)  직진
-    ├─ 0x01 → Motor_Forwart_Start(0, 100, 0, 100)       완만한 좌회전
-    ├─ 0x03 → Motor_Forwart_Start(-30, 100, -30, 100)   급격한 좌회전
-    ├─ 0x08 → Motor_Forwart_Start(100, 0, 100, 0)       완만한 우회전
-    ├─ 0x0C → Motor_Forwart_Start(100, -30, 100, -30)   급격한 우회전
-    └─ default → Motor_Halt() → [STATE_BREAK]
+```mermaid
+flowchart TD
+    START([전원 투입]) --> BREAK
+
+    BREAK["STATE_BREAK<br>900 ms 느린 LED 점멸<br>버튼 입력 대기"]
+    BREAK -->|"PC13 버튼 누름<br>EXTI ISR → chPC13_Rising = 'y'"| RUN
+
+    RUN["STATE_RUN<br>300 ms 빠른 LED 점멸"]
+    RUN --> SW{IRsensor_value}
+
+    SW -->|"0x00<br>전 센서 검은 선"| GO["직진<br>(100, 100, 100, 100)"]
+    SW -->|"0x01<br>우측 끝 흰 바탕"| TL["완만한 좌회전<br>(0, 100, 0, 100)"]
+    SW -->|"0x03<br>우측 두 센서 흰 바탕"| SL["급격한 좌회전<br>(-30, 100, -30, 100)"]
+    SW -->|"0x08<br>좌측 끝 흰 바탕"| TR["완만한 우회전<br>(100, 0, 100, 0)"]
+    SW -->|"0x0C<br>좌측 두 센서 흰 바탕"| SR["급격한 우회전<br>(100, -30, 100, -30)"]
+    SW -->|"default<br>예상 외 패턴"| HALT["비상 정지<br>Motor_Halt()"]
+
+    GO & TL & SL & TR & SR --> RUN
+    HALT --> BREAK
 ```
 
 ---

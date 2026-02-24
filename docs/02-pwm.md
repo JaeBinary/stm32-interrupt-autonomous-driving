@@ -103,6 +103,26 @@ htim3.Instance->CCR2 = (50 * 50) / 100; // 50% 듀티비 유지
 | CH3 | PB0 | 전방 좌측(FL) |
 | CH4 | PB1 | 전방 우측(FR) |
 
+```mermaid
+flowchart LR
+    subgraph TIM3["TIM3 (공유 ARR · PSC)"]
+        CH1["CH1<br>PA6"]
+        CH2["CH2<br>PA7"]
+        CH3["CH3<br>PB0"]
+        CH4["CH4<br>PB1"]
+    end
+    subgraph ROBOT["4WD 로봇"]
+        RR["후방 우측<br>Rear Right"]
+        RL["후방 좌측<br>Rear Left"]
+        FL["전방 좌측<br>Front Left"]
+        FR["전방 우측<br>Front Right"]
+    end
+    CH1 --> RR
+    CH2 --> RL
+    CH3 --> FL
+    CH4 --> FR
+```
+
 4개 채널이 동일한 ARR을 공유하므로 PWM 주파수는 모든 바퀴에 동일하게 적용됩니다.
 
 ---

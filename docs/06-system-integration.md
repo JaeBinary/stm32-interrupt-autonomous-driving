@@ -26,10 +26,12 @@ TIM3은 한 번 시작하면 MCU 개입 없이 하드웨어가 PWM 신호를 출
 
 세 타이머 모두 APB1 버스에 연결됩니다. APB1 프리스케일러가 2분주이므로 타이머 입력 클럭은 PCLK1의 2배로 체배됩니다.
 
-```
-HSI 8 MHz → PLL(÷2 → ×16) → SYSCLK 64 MHz
-SYSCLK → AHB(÷1) → HCLK 64 MHz
-HCLK → APB1(÷2) → PCLK1 32 MHz → Timer ×2 = 64 MHz
+```mermaid
+flowchart LR
+    HSI["HSI<br>8 MHz"] -->|"PLL ÷2 × 16"| SYS["SYSCLK<br>64 MHz"]
+    SYS -->|"AHB ÷1"| HCLK["HCLK<br>64 MHz"]
+    HCLK -->|"APB1 ÷2"| PCLK["PCLK1<br>32 MHz"]
+    PCLK -->|"Timer × 2"| TIM["TIM2 · TIM3 · TIM4<br>64 MHz"]
 ```
 
 TIM2 · TIM3 · TIM4 모두 64 MHz를 입력으로 받습니다.
@@ -105,6 +107,16 @@ EXTI 콜백은 비동기로 실행됩니다. 메인 루프에서 `chPC13_Rising 
 | `STATE_BREAK` | 초기 상태. 버튼 입력 대기 | 900 ms (느린 점멸) |
 | `STATE_RUN` | 자율주행 실행 중 | 300 ms (빠른 점멸) |
 
+```mermaid
+stateDiagram-v2
+    [*] --> STATE_BREAK
+    STATE_BREAK : STATE_BREAK<br>버튼 입력 대기 · LED 900 ms 점멸
+    STATE_RUN   : STATE_RUN<br>자율주행 실행 중 · LED 300 ms 점멸
+
+    STATE_BREAK --> STATE_RUN  : PC13 버튼 누름<br>(EXTI Rising Edge)
+    STATE_RUN   --> STATE_BREAK: 라인 이탈 감지<br>(default 케이스 → Motor_Halt)
+```
+
 ```c
 while (1) {
     if (STATE_BREAK == uState) {
@@ -163,13 +175,24 @@ TIM3은 `HAL_TIM_Base_Start_IT()` 대신 `HAL_TIM_PWM_Start()`로 시작합니�
 
 ## 데이터 흐름
 
-```
-[TIM2 ISR]   HC-SR04 → HCSR04_distance  ─┐
-[TIM4 ISR]   IR Sensor → IRsensor_value  ─┤→ 메인 루프 판단
-[EXTI ISR]   PC13 → chPC13_Rising       ─┘        ↓
-                                              Motor_Forwart_Start()
-                                                    ↓
-[TIM3 하드웨어]                                TIM3 CCR → PWM 출력
+```mermaid
+flowchart LR
+    subgraph ISR["ISR 계층 (인터럽트)"]
+        TIM2ISR["TIM2 ISR<br>HC-SR04 상태 머신<br>4 µs 주기"]
+        TIM4ISR["TIM4 ISR<br>IR 센서 폴링<br>1 ms 주기"]
+        EXTI_ISR["EXTI ISR<br>PC13 버튼"]
+    end
+
+    TIM2ISR --> DIST["HCSR04_distance"]
+    TIM4ISR --> IRVAL["IRsensor_value"]
+    EXTI_ISR --> FLAG["chPC13_Rising"]
+
+    DIST  --> MAIN["메인 루프<br>주행 판단"]
+    IRVAL --> MAIN
+    FLAG  --> MAIN
+
+    MAIN --> MOTOR["Motor_Forwart_Start()"]
+    MOTOR --> TIM3HW["TIM3 하드웨어<br>CCR → PWM 출력<br>100 Hz"]
 ```
 
 ISR은 데이터 수집과 상태 갱신만 담당합니다. 모터 제어 결정은 메인 루프에서 수행합니다.

@@ -97,17 +97,20 @@ STM32F103 Nucleo 보드에서 `PA5`는 사용자 LED(LD2)에 연결되어 있습
 
 ## 동작 흐름
 
-```
-main()
-  ├─ HAL_Init()
-  ├─ SystemClock_Config()
-  ├─ MX_GPIO_Init()
-  ├─ MX_USART2_UART_Init()
-  └─ while(1)
-       ├─ HAL_UART_Receive()   ← 500ms 대기
-       ├─ switch(urx[0])       ← 수신 문자 처리
-       ├─ HAL_Delay(400)
-       └─ HAL_GPIO_TogglePin() ← LED 토글
+```mermaid
+flowchart TD
+    A["main()"] --> B["HAL_Init()"]
+    B --> C["SystemClock_Config()"]
+    C --> D["MX_GPIO_Init()"]
+    D --> E["MX_USART2_UART_Init()"]
+    E --> LOOP(["while(1)"])
+    LOOP --> G["HAL_UART_Receive()<br>500 ms 대기"]
+    G --> H{HAL_OK?}
+    H -- "수신 성공" --> I["switch(urx[0])<br>수신 문자 처리"]
+    H -- "타임아웃" --> J["HAL_Delay(400)"]
+    I --> J
+    J --> K["HAL_GPIO_TogglePin()<br>LD2 LED 토글"]
+    K --> LOOP
 ```
 
 ---
