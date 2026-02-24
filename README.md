@@ -1,6 +1,5 @@
-# STM32F103 Interrupt-Driven Autonomous Driving
+# STM32F103 기반 4WD 자율주행 로봇 펌웨어
 
-STM32F103 기반 4WD 자율주행 로봇 펌웨어.
 인터럽트(ISR) 기반의 비차단(Non-blocking) 아키텍처로 HC-SR04 초음파 센서, IR 라인 센서, L298N 모터 드라이버를 동시에 제어한다.
 
 ---
