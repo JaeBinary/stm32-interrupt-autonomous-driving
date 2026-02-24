@@ -48,23 +48,23 @@ flowchart LR
 
 ## 문서별 한 줄 요약
 
-1. **[UART와 GPIO 기초](./01-uart-gpio.md)**
+1. **[UART와 GPIO 기초](./01-uart-gpio.md)**  
    `printf`를 UART에 연결하여 디버거 없이 터미널에서 실행 결과를 확인하는 방법을 설명합니다.
 
-2. **[TIM3으로 PWM 출력하기](./02-pwm.md)**
+2. **[TIM3으로 PWM 출력하기](./02-pwm.md)**  
    PSC·ARR·CCR 레지스터 계산으로 100 Hz PWM을 생성하고 4채널을 독립 제어하는 방법을 설명합니다.
 
-3. **[HC-SR04 인터럽트 기반 거리 측정](./03-hcsr04.md)**
+3. **[HC-SR04 인터럽트 기반 거리 측정](./03-hcsr04.md)**  
    `HAL_Delay` 없이 TIM2 ISR 안의 상태 머신으로 초음파 거리를 측정하는 방법을 설명합니다.
 
-4. **[IR 센서 기반 라인 추종](./04-ir-sensor.md)**
+4. **[IR 센서 기반 라인 추종](./04-ir-sensor.md)**  
    4채널 IR 센서 값을 1바이트 비트 패턴으로 인코딩하여 라인 위치를 판단하는 방법을 설명합니다.
 
-5. **[L298N 모터 드라이버 제어](./05-motor-driver.md)**
+5. **[L298N 모터 드라이버 제어](./05-motor-driver.md)**  
    음수 PWM 값으로 바퀴를 역전시켜 Tank Turn과 급격한 방향 전환을 단일 함수 호출로 구현하는 방법을 설명합니다.
 
-6. **[TIM2 · TIM3 · TIM4 통합 운용](./06-system-integration.md)**
+6. **[TIM2 · TIM3 · TIM4 통합 운용](./06-system-integration.md)**  
    세 타이머를 역할별로 분리하고 EXTI를 추가하여 모든 주변 장치를 동시에 제어하는 아키텍처를 설명합니다.
 
-7. **[라인 트레이싱 자율주행 구현](./07-autonomous-driving.md)**
+7. **[라인 트레이싱 자율주행 구현](./07-autonomous-driving.md)**  
    `switch(IRsensor_value)` 하나로 직진·좌회전·우회전·비상 정지를 자동 결정하는 자율주행 로직을 설명합니다.
