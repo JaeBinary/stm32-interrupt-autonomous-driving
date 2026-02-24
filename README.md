@@ -406,13 +406,3 @@ TIM3은 PWM 하드웨어 출력 전용으로 인터럽트를 사용하지 않는
 ## 기술문서
 
 각 주변 장치와 시스템 구조를 주제별로 설명하는 문서 목록이다. 전체 목차는 [docs/README.md](./docs/README.md)에서 확인할 수 있다.
-
-| 번호 | 문서 | 핵심 내용 |
-|------|------|----------|
-| 01 | [UART와 GPIO 기초](./docs/01-uart-gpio.md) | `printf` 리디렉션, UART 수신, GPIO 토글 |
-| 02 | [TIM3으로 PWM 출력하기](./docs/02-pwm.md) | PSC·ARR·CCR 계산, 4채널 PWM 매핑 |
-| 03 | [HC-SR04 인터럽트 기반 거리 측정](./docs/03-hcsr04.md) | TIM2 ISR 상태 머신, 4비트 노이즈 필터, 거리 공식 |
-| 04 | [IR 센서 기반 라인 추종](./docs/04-ir-sensor.md) | 4채널 인코딩, TIM4 30 ms 폴링 |
-| 05 | [L298N 모터 드라이버 제어](./docs/05-motor-driver.md) | H-Bridge 방향 제어, 부호 있는 PWM으로 역전 구현 |
-| 06 | [TIM2 · TIM3 · TIM4 통합 운용](./docs/06-system-integration.md) | Non-blocking 아키텍처, ISR 구조, 상태 머신 |
-| 07 | [라인 트레이싱 자율주행 구현](./docs/07-autonomous-driving.md) | `switch` 기반 주행 판단, 강의 템플릿과의 차이 |
